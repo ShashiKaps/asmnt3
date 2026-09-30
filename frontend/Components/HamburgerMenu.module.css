@@ -1,0 +1,72 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.button:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.button:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+.line {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background-color: var(--page-text);
+  border-radius: 2px;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.4);
+  min-width: 180px;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.link {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  color: var(--page-text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  background: transparent;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.link:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #fff;
+}
+
+.active {
+  background-color: rgba(59, 130, 246, 0.18);
+  color: #fff;
+}
