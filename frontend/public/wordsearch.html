@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phoneme Word Search</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:sans-serif;background:#1a1a1a;color:#fff;display:flex;flex-direction:column;align-items:center;padding:16px}
+h1{color:#60a5fa;margin-bottom:12px;font-size:1.5rem}
+.layout{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;justify-content:center;width:100%}
+.ctrl{background:#242424;border:1px solid #374151;border-radius:12px;padding:16px;width:220px;display:flex;flex-direction:column;gap:10px;flex-shrink:0}
+.sect{font-size:13px;color:#9ca3af;font-weight:600}
+.rrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.rrow label{font-size:13px;color:#d1d5db;display:flex;align-items:center;gap:4px}
+input[type=number]{background:#1a1a1a;color:#fff;border:1px solid #374151;border-radius:6px;padding:4px 8px;width:60px}
+.btn-primary{background:#2563eb;color:#fff;border:none;border-radius:8px;padding:9px;cursor:pointer;font-weight:bold;width:100%}
+.btn-primary:hover{background:#1d4ed8}
+.btn-sec{background:#374151;color:#fff;border:none;border-radius:8px;padding:9px;cursor:pointer;font-weight:bold;width:100%}
+.btn-sec:hover{background:#4b5563}
+textarea{background:#1a1a1a;border:1px solid #374151;border-radius:6px;padding:8px;color:#d1d5db;font-family:monospace;font-size:12px;resize:none;width:100%;height:130px;outline:none}
+.puzzle{background:#242424;border:1px solid #374151;border-radius:12px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.grid{display:inline-grid;gap:2px;user-select:none}
+.cell{width:44px;height:44px;border:1px solid #374151;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-weight:bold;font-size:13px;cursor:pointer;background:#2a2a2a;color:#e5e7eb;transition:background 0.1s}
+.cell:hover{background:#3a3a3a}
+.cell.hl{background:#eab308;color:#000}
+.cell.found{background:#166534;color:#bbf7d0}
+.cell.sol{background:#7f1d1d;color:#fecaca}
+.wlist{background:#1e1e1e;border:1px solid #374151;border-radius:10px;padding:12px;width:100%}
+.wlist h3{color:#9ca3af;margin-bottom:8px;font-size:14px}
+.words{display:flex;flex-wrap:wrap;gap:6px}
+.word{background:#2a2a2a;color:#e5e7eb;padding:4px 10px;border-radius:6px;font-size:13px;font-family:monospace}
+.word.done{background:#14532d;color:#6b7280;text-decoration:line-through}
+.err{color:#f87171;font-size:12px;background:#450a0a;border-radius:6px;padding:6px}
+.congrats-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:100}
+.congrats-box{background:#1e1e1e;border:2px solid #eab308;border-radius:16px;padding:32px 48px;text-align:center;animation:bonce 0.5s infinite alternate}
+@keyframes bonce{from{transform:translateY(0)}to{transform:translateY(-10px)}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<h1>Phoneme Word Search</h1>
+<div class="layout">
+  <div class="ctrl">
+    <div>
+      <span class="sect">Phoneme Length</span>
+      <div class="rrow">
+        <label><input type="radio" name="plen" value="3" checked> 3</label>
+        <label><input type="radio" name="plen" value="4"> 4</label>
+        <label><input type="radio" name="plen" value="5"> 5</label>
+      </div>
+      <div class="rrow" style="margin-top:4px">
+        <label><input type="radio" name="plen" value="random"> Random</label>
+      </div>
+    </div>
+    <div>
+      <span class="sect">Number of Words</span>
+      <div class="rrow">
+        <label><input type="radio" name="nw" value="7"> 7</label>
+        <label><input type="radio" name="nw" value="8"> 8</label>
+        <label><input type="radio" name="nw" value="9"> 9</label>
+        <label><input type="radio" name="nw" value="10" checked> 10</label>
+      </div>
+      <div class="rrow" style="margin-top:4px">
+        <label><input type="radio" name="nw" value="11"> 11</label>
+        <label><input type="radio" name="nw" value="12"> 12</label>
+        <label><input type="radio" name="nw" value="13"> 13</label>
+        <label><input type="radio" name="nw" value="14"> 14</label>
+      </div>
+    </div>
+    <div class="rrow">
+      <div><label style="display:block;margin-bottom:4px;font-size:12px;color:#9ca3af">Rows</label><input type="number" id="gridRows" value="10" min="10" max="14"></div>
+      <div><label style="display:block;margin-bottom:4px;font-size:12px;color:#9ca3af">Cols</label><input type="number" id="gridCols" value="10" min="10" max="14"></div>
+    </div>
+    <div>
+      <span class="sect" style="display:block;margin-bottom:4px">Words (phonemes per line)</span>
+      <textarea id="wordInput"></textarea>
+    </div>
+    <div id="errMsg" class="err hidden"></div>
+    <button class="btn-primary" onclick="buildPuzzle()">Generate Puzzle</button>
+    <button class="btn-sec" id="solBtn" onclick="toggleSol()">Show Answers</button>
+  </div>
+
+  <div class="puzzle">
+    <div class="grid" id="grid"></div>
+    <div class="wlist"><h3>Word List:</h3><div class="words" id="wordlist"></div></div>
+  </div>
+</div>
+
+<div class="congrats-overlay hidden" id="congrats">
+  <div class="congrats-box">
+    <div style="font-size:48px">&#127942;</div>
+    <h2 style="color:#facc15;margin:8px 0 4px">Congratulations!</h2>
+    <p style="color:#9ca3af;font-size:14px">You found all the words!</p>
+  </div>
+</div>
+
+<script>
+// ── Word data ──────────────────────────────────────────────────────────────
+const WORDS_3 = [
+  {"word":"bed","phonemes":["b","e","d"]},
+  {"word":"bid","phonemes":["b","ɪ","d"]},
+  {"word":"bad","phonemes":["b","æ","d"]},
+  {"word":"bud","phonemes":["b","ɐ","d"]},
+  {"word":"bird","phonemes":["b","ɜː","d"]},
+  {"word":"bark","phonemes":["b","ɐː","k"]},
+  {"word":"book","phonemes":["b","ʊ","k"]},
+  {"word":"boot","phonemes":["b","ʉː","t"]},
+  {"word":"boat","phonemes":["b","əʉ","t"]},
+  {"word":"bike","phonemes":["b","ɑe","k"]},
+  {"word":"bait","phonemes":["b","æɪ","t"]},
+  {"word":"boil","phonemes":["b","oɪ","l"]},
+  {"word":"beard","phonemes":["b","ɪə","d"]},
+  {"word":"choice","phonemes":["tʃ","oɪ","s"]},
+  {"word":"thin","phonemes":["θ","ɪ","n"]},
+  {"word":"then","phonemes":["ð","e","n"]},
+  {"word":"ship","phonemes":["ʃ","ɪ","p"]},
+  {"word":"chin","phonemes":["tʃ","ɪ","n"]},
+  {"word":"jam","phonemes":["dʒ","æ","m"]},
+  {"word":"yes","phonemes":["j","e","s"]},
+  {"word":"win","phonemes":["w","ɪ","n"]},
+  {"word":"ring","phonemes":["ɹ","ɪ","ŋ"]},
+  {"word":"log","phonemes":["l","ɔ","ɡ"]},
+  {"word":"fan","phonemes":["f","æ","n"]},
+  {"word":"van","phonemes":["v","æ","n"]},
+  {"word":"sun","phonemes":["s","ɐ","n"]},
+  {"word":"zip","phonemes":["z","ɪ","p"]},
+  {"word":"gum","phonemes":["ɡ","ɐ","m"]},
+  {"word":"hat","phonemes":["h","æ","t"]},
+  {"word":"fork","phonemes":["f","oː","k"]}
+];
+const WORDS_4 = [
+  {"word":"stop","phonemes":["s","t","ɔ","p"]},
+  {"word":"frog","phonemes":["f","ɹ","ɔ","ɡ"]},
+  {"word":"clap","phonemes":["k","l","æ","p"]},
+  {"word":"slip","phonemes":["s","l","ɪ","p"]},
+  {"word":"drum","phonemes":["d","ɹ","ɐ","m"]},
+  {"word":"grin","phonemes":["ɡ","ɹ","ɪ","n"]},
+  {"word":"train","phonemes":["t","ɹ","æɪ","n"]},
+  {"word":"cloud","phonemes":["k","l","æɔ","d"]},
+  {"word":"snake","phonemes":["s","n","æɪ","k"]},
+  {"word":"smile","phonemes":["s","m","ɑe","l"]},
+  {"word":"milk","phonemes":["m","ɪ","l","k"]},
+  {"word":"hand","phonemes":["h","æ","n","d"]},
+  {"word":"tent","phonemes":["t","e","n","t"]},
+  {"word":"jump","phonemes":["dʒ","ɐ","m","p"]},
+  {"word":"lamp","phonemes":["l","æ","m","p"]},
+  {"word":"bank","phonemes":["b","æ","ŋ","k"]},
+  {"word":"frame","phonemes":["f","ɹ","æɪ","m"]},
+  {"word":"cold","phonemes":["k","əʉ","l","d"]},
+  {"word":"wind","phonemes":["w","ɪ","n","d"]},
+  {"word":"soft","phonemes":["s","ɔ","f","t"]},
+  {"word":"gift","phonemes":["ɡ","ɪ","f","t"]},
+  {"word":"desk","phonemes":["d","e","s","k"]},
+  {"word":"left","phonemes":["l","e","f","t"]},
+  {"word":"pond","phonemes":["p","ɔ","n","d"]},
+  {"word":"golf","phonemes":["ɡ","ɔ","l","f"]},
+  {"word":"silk","phonemes":["s","ɪ","l","k"]},
+  {"word":"great","phonemes":["g","ɹ","æɪ","t"]},
+  {"word":"crab","phonemes":["k","ɹ","æ","b"]},
+  {"word":"plug","phonemes":["p","l","ɐ","ɡ"]},
+  {"word":"quiz","phonemes":["k","w","ɪ","z"]}
+];
+const WORDS_5 = [
+  {"word":"stamp","phonemes":["s","t","æ","m","p"]},
+  {"word":"plant","phonemes":["p","l","æ","n","t"]},
+  {"word":"blank","phonemes":["b","l","æ","ŋ","k"]},
+  {"word":"grand","phonemes":["ɡ","ɹ","æ","n","d"]},
+  {"word":"clamp","phonemes":["k","l","æ","m","p"]},
+  {"word":"twist","phonemes":["t","w","ɪ","s","t"]},
+  {"word":"trust","phonemes":["t","ɹ","ɐ","s","t"]},
+  {"word":"drink","phonemes":["d","ɹ","ɪ","ŋ","k"]},
+  {"word":"brisk","phonemes":["b","ɹ","ɪ","s","k"]},
+  {"word":"shrimp","phonemes":["ʃ","ɹ","ɪ","m","p"]},
+  {"word":"scrap","phonemes":["s","k","ɹ","æ","p"]},
+  {"word":"scribe","phonemes":["s","k","ɹ","ɑe","b"]},
+  {"word":"scream","phonemes":["s","k","ɹ","iː","m"]},
+  {"word":"splash","phonemes":["s","p","l","æ","ʃ"]},
+  {"word":"spring","phonemes":["s","p","ɹ","ɪ","ŋ"]},
+  {"word":"strap","phonemes":["s","t","ɹ","æ","p"]},
+  {"word":"street","phonemes":["s","t","ɹ","iː","t"]},
+  {"word":"scrub","phonemes":["s","k","ɹ","ɐ","b"]},
+  {"word":"flask","phonemes":["f","l","ɐː","s","k"]},
+  {"word":"clasp","phonemes":["k","l","ɐː","s","p"]},
+  {"word":"cleft","phonemes":["k","l","e","f","t"]},
+  {"word":"glint","phonemes":["ɡ","l","ɪ","n","t"]},
+  {"word":"blend","phonemes":["b","l","e","n","d"]},
+  {"word":"strain","phonemes":["s","t","ɹ","æɪ","n"]},
+  {"word":"thrust","phonemes":["θ","ɹ","ɐ","s","t"]},
+  {"word":"sprawl","phonemes":["s","p","ɹ","oː","l"]},
+  {"word":"scrawl","phonemes":["s","k","ɹ","oː","l"]},
+  {"word":"sprig","phonemes":["s","p","ɹ","ɪ","ɡ"]},
+  {"word":"sprout","phonemes":["s","p","ɹ","æɔ","t"]},
+  {"word":"smoked","phonemes":["s","m","əʉ","k","t"]}
+];
+const WORD_LISTS = {3: WORDS_3, 4: WORDS_4, 5: WORDS_5};
+
+// ── Directions: left→right, top→bottom, bottom→top, diagonal↘ ─────────────
+const DIRS = [{dr:0,dc:1},{dr:1,dc:0},{dr:-1,dc:0},{dr:1,dc:1}];
+
+// ── Game state ─────────────────────────────────────────────────────────────
+let matrix = [], wordsData = [], solutions = [], foundKeys = new Set(), foundWords = new Set(), showSol = false;
+let isSelecting = false, startCell = null, lastCell = null;
+
+function toWordInput(len) {
+  if (len === 'random') {
+    const all = [...WORDS_3, ...WORDS_4, ...WORDS_5];
+    return all.sort(() => Math.random() - 0.5).map(e => e.phonemes.join(' ')).join('\n');
+  }
+  return [...WORD_LISTS[len]].sort(() => Math.random() - 0.5).map(e => e.phonemes.join(' ')).join('\n');
+}
+
+// init textarea and wire phoneme-length change
+document.getElementById('wordInput').value = toWordInput(3);
+document.querySelectorAll('input[name=plen]').forEach(r => r.addEventListener('change', () => {
+  const v = document.querySelector('input[name=plen]:checked').value;
+  document.getElementById('wordInput').value = toWordInput(v === 'random' ? 'random' : parseInt(v));
+  buildPuzzle();
+}));
+document.querySelectorAll('input[name=nw]').forEach(r => r.addEventListener('change', buildPuzzle));
+
+function canPlace(units, r, c, d, mat, rows, cols) {
+  const er = r + d.dr * (units.length - 1), ec = c + d.dc * (units.length - 1);
+  if (er < 0 || er >= rows || ec < 0 || ec >= cols) return false;
+  for (let i = 0; i < units.length; i++) {
+    const cr = r + d.dr * i, cc = c + d.dc * i;
+    if (mat[cr][cc] && mat[cr][cc] !== units[i]) return false;
+  }
+  return true;
+}
+
+function buildPuzzle() {
+  const rows = Math.min(14, Math.max(10, parseInt(document.getElementById('gridRows').value) || 10));
+  const cols = Math.min(14, Math.max(10, parseInt(document.getElementById('gridCols').value) || 10));
+  const nw = parseInt(document.querySelector('input[name=nw]:checked').value) || 10;
+
+  // reshuffle every time so Generate Puzzle gives a different random selection
+  const plen = document.querySelector('input[name=plen]:checked').value;
+  const freshInput = toWordInput(plen === 'random' ? 'random' : parseInt(plen));
+  document.getElementById('wordInput').value = freshInput;
+
+  const lines = freshInput.trim()
+    .split('\n').map(l => l.trim()).filter(l => l.length > 0).slice(0, nw);
+  if (!lines.length) return;
+
+  const words = [], pool = [];
+  lines.forEach(line => {
+    const parts = line.includes(' ') ? line.split(/\s+/) : line.split('');
+    const display = parts.join('');
+    words.push({ display, clean: parts.join(' '), units: parts, found: false });
+    parts.forEach(p => { if (!pool.includes(p)) pool.push(p); });
+  });
+  if (!pool.length) pool.push('æ','b','d','ɪ','p','s','t');
+
+  const mat = Array.from({length: rows}, () => new Array(cols).fill(''));
+  const sols = [], errParts = [];
+
+  words.forEach(w => {
+    let placed = false, attempts = 0;
+    while (!placed && attempts < 300) {
+      attempts++;
+      const d = DIRS[Math.floor(Math.random() * DIRS.length)];
+      const r = Math.floor(Math.random() * rows), c = Math.floor(Math.random() * cols);
+      if (canPlace(w.units, r, c, d, mat, rows, cols)) {
+        const coords = [];
+        for (let i = 0; i < w.units.length; i++) {
+          const cr = r + d.dr * i, cc = c + d.dc * i;
+          mat[cr][cc] = w.units[i]; coords.push({r: cr, c: cc});
+        }
+        sols.push({display: w.display, coords}); placed = true;
+      }
+    }
+    if (!placed) errParts.push(w.clean);
+  });
+
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++)
+      if (!mat[r][c]) mat[r][c] = pool[Math.floor(Math.random() * pool.length)];
+
+  matrix = mat; wordsData = words; solutions = sols;
+  foundKeys = new Set(); foundWords = new Set(); showSol = false;
+  document.getElementById('solBtn').textContent = 'Show Answers';
+
+  const err = document.getElementById('errMsg');
+  if (errParts.length) { err.textContent = 'Could not place: ' + errParts.join(', ') + ' — try a bigger grid.'; err.style.display = 'block'; }
+  else err.style.display = 'none';
+
+  renderGrid(rows, cols); renderWordList();
+}
+
+function renderGrid(rows, cols) {
+  const g = document.getElementById('grid');
+  g.style.gridTemplateColumns = 'repeat(' + cols + ', 44px)';
+  g.innerHTML = '';
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell'; cell.textContent = matrix[r][c];
+      cell.dataset.r = r; cell.dataset.c = c;
+      cell.addEventListener('mousedown', onMD);
+      cell.addEventListener('mouseover', onMO);
+      cell.addEventListener('touchstart', onTD, {passive: true});
+      g.appendChild(cell);
+    }
+  }
+}
+
+function refreshGrid() {
+  document.querySelectorAll('#grid .cell').forEach(cell => {
+    const r = parseInt(cell.dataset.r), c = parseInt(cell.dataset.c), k = r + ',' + c;
+    cell.classList.remove('found','hl','sol');
+    if (foundKeys.has(k)) cell.classList.add('found');
+    else if (showSol && solutions.some(s => s.coords.some(co => co.r === r && co.c === c))) cell.classList.add('sol');
+  });
+}
+
+function highlightPath(path) {
+  document.querySelectorAll('#grid .cell').forEach(cell => {
+    const r = parseInt(cell.dataset.r), c = parseInt(cell.dataset.c), k = r + ',' + c;
+    cell.classList.remove('hl','sol');
+    if (foundKeys.has(k)) { cell.classList.add('found'); return; }
+    const inPath = path && path.some(p => p.r === r && p.c === c);
+    if (inPath) cell.classList.add('hl');
+  });
+}
+
+function getPath(a, b) {
+  const dr = b.r - a.r, dc = b.c - a.c;
+  if (dr === 0 || dc === 0 || Math.abs(dr) === Math.abs(dc)) {
+    const steps = Math.max(Math.abs(dr), Math.abs(dc));
+    const sr = dr === 0 ? 0 : dr / steps, sc = dc === 0 ? 0 : dc / steps;
+    return Array.from({length: steps + 1}, (_, i) => ({r: a.r + sr * i, c: a.c + sc * i}));
+  }
+  return null;
+}
+
+function onMD(e) { isSelecting = true; const r = +e.currentTarget.dataset.r, c = +e.currentTarget.dataset.c; startCell = {r, c}; lastCell = {r, c}; highlightPath([{r, c}]); }
+function onTD(e) { isSelecting = true; const r = +e.currentTarget.dataset.r, c = +e.currentTarget.dataset.c; startCell = {r, c}; lastCell = {r, c}; highlightPath([{r, c}]); }
+function onMO(e) {
+  if (!isSelecting || !startCell) return;
+  const r = +e.currentTarget.dataset.r, c = +e.currentTarget.dataset.c;
+  lastCell = {r, c};
+  const path = getPath(startCell, {r, c});
+  highlightPath(path || [{r, c}]);
+}
+
+// touchmove: use elementFromPoint since touch events stay on the originating element
+window.addEventListener('touchmove', e => {
+  if (!isSelecting) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  if (el && el.classList.contains('cell') && el.dataset.r !== undefined) {
+    const r = +el.dataset.r, c = +el.dataset.c;
+    lastCell = {r, c};
+    const path = getPath(startCell, {r, c});
+    highlightPath(path || [{r, c}]);
+  }
+}, {passive: false});
+
+document.addEventListener('mouseup', () => { if (!isSelecting) return; isSelecting = false; checkSel(); highlightPath(null); refreshGrid(); });
+document.addEventListener('touchend', () => { if (!isSelecting) return; isSelecting = false; checkSel(); highlightPath(null); refreshGrid(); });
+
+function checkSel() {
+  if (!startCell || !lastCell) return;
+  const path = getPath(startCell, lastCell); if (!path) return;
+  const str = path.map(p => matrix[p.r] && matrix[p.r][p.c] ? matrix[p.r][p.c] : '').join('');
+  wordsData.forEach(w => {
+    if (!w.found && w.display === str) {
+      w.found = true;
+      path.forEach(p => foundKeys.add(p.r + ',' + p.c));
+      foundWords.add(w.display);
+      renderWordList();
+      if (foundWords.size === wordsData.length) showCongrats();
+    }
+  });
+}
+
+function renderWordList() {
+  const wl = document.getElementById('wordlist'); wl.innerHTML = '';
+  wordsData.forEach(w => {
+    const span = document.createElement('span');
+    span.className = 'word' + (foundWords.has(w.display) ? ' done' : '');
+    span.textContent = w.clean; wl.appendChild(span);
+  });
+}
+
+function toggleSol() { showSol = !showSol; refreshGrid(); document.getElementById('solBtn').textContent = showSol ? 'Hide Answers' : 'Show Answers'; }
+
+function showCongrats() {
+  const el = document.getElementById('congrats'); el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('hidden'), 3000);
+}
+
+buildPuzzle();
+</script>
+</body>
+</html>

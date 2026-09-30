@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #edf2ff;
+  --page-bg: #02070d;
+  --page-text: #e2e8f0;
+  --muted-text: #a5b4cf;
+  --border: rgba(148, 163, 184, 0.35);
+  --chrome-bg: #040b14;
+  --panel-bg: #0b1220;
+  --wordlist-bg: #0b1220;
+  --card-bg: #0b1220;
+  --key-hover-bg: #1e293b;
+  --link-text: #cccccc;
+  --link-hover-bg: #0000ff;
+  --link-hover-text: #ffffff;
+  --link-active-bg: #111111;
+  --link-active-text: #ffffff;
+}
+
+html[data-theme="light"] {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --page-bg: #f8fafc;
+  --page-text: #0f172a;
+  --muted-text: #475569;
+  --border: rgba(15, 23, 42, 0.15);
+  --chrome-bg: #e2e8f0;
+  --panel-bg: #ffffff;
+  --wordlist-bg: #ffffff;
+  --card-bg: #ffffff;
+  --key-hover-bg: #cbd5e1;
+  --link-text: #334155;
+  --link-hover-bg: #2563eb;
+  --link-hover-text: #ffffff;
+  --link-active-bg: #e2e8f0;
+  --link-active-text: #0f172a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: #000000;
+}
+
+html {
+  background: #000000;
+}
+
+body {
+  background: var(--page-bg);
+  color: var(--page-text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  color: inherit;
+}
