@@ -1,4 +1,0 @@
-{
-  "/api/wordlists/route": "app/api/wordlists/route.js",
-  "/api/words/route": "app/api/words/route.js"
-}

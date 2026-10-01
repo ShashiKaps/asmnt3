@@ -46,10 +46,14 @@ export default function WordSearchPage() {
 
   const toWordInput = (len: 3 | 4 | 5 | "random") => {
     const lists = wordsByLengthRef.current;
+    // fall back to built-in words whenever the API has nothing seeded for this length
+    const defaultLines = DEFAULT_WORDS.split("\n");
     if (len === "random") {
       const all = [...lists[3], ...lists[4], ...lists[5]];
+      if (all.length === 0) return [...defaultLines].sort(() => Math.random() - 0.5).join("\n");
       return all.sort(() => Math.random() - 0.5).map((e) => e.phonemes.join(" ")).join("\n");
     }
+    if (lists[len].length === 0) return [...defaultLines].sort(() => Math.random() - 0.5).join("\n");
     return [...lists[len]].sort(() => Math.random() - 0.5).map((e) => e.phonemes.join(" ")).join("\n");
   };
 
