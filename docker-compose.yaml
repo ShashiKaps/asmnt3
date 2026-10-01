@@ -33,10 +33,6 @@ services:
       - sqlite_data:/sqlite
     command: ["sh", "-c", "while true; do sleep 1000; done"]
 
-volumes:
-  sqlite_data:
-
-
   # Jaeger
   jaegertracing:
     image: jaegertracing/jaeger:latest
@@ -80,3 +76,6 @@ volumes:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
+
+volumes:
+  sqlite_data:
