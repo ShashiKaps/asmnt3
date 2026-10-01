@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // sequelize's dynamic require() pattern breaks Turbopack's static bundling; keep it external.
-  serverExternalPackages: ['sequelize', 'sqlite3'],
+  allowedDevOrigins: [
+    '172.31.78.43', 'localhost', '127.0.0.1','ec2-13-222-13-140.compute-1.amazonaws.coms',], // change to your IP in production
 };
 export default nextConfig;
