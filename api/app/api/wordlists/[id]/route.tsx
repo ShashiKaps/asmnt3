@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     await ensureDb();
     const { id } = await params;
 
-    const wordList: any = await WordList.findById(id, { include: [Word] });
+    const wordList: any = await WordList.findByPk(id, { include: [Word] });
     if (!wordList) {
       return new NextResponse('Word list not found', { status: 404, headers: corsHeaders });
     }
@@ -44,7 +44,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
     const body = await request.json();
 
-    const wordList: any = await WordList.findById(id);
+    const wordList: any = await WordList.findByPk(id);
     if (!wordList) {
       return new NextResponse('Word list not found', { status: 404, headers: corsHeaders });
     }
@@ -73,7 +73,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     await ensureDb();
     const { id } = await params;
 
-    const wordList = await WordList.findById(id);
+    const wordList = await WordList.findByPk(id);
     if (!wordList) {
       return new NextResponse('Word list not found', { status: 404, headers: corsHeaders });
     }

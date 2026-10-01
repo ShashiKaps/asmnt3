@@ -12,7 +12,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
     const body = await request.json();
 
-    const word = await Word.findById(id);
+    const word = await Word.findByPk(id);
     if (!word) {
       return new NextResponse('Word not found', { status: 404, headers: corsHeaders });
     }
@@ -39,7 +39,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     await ensureDb();
     const { id } = await params;
 
-    const word = await Word.findById(id);
+    const word = await Word.findByPk(id);
     if (!word) {
       return new NextResponse('Word not found', { status: 404, headers: corsHeaders });
     }

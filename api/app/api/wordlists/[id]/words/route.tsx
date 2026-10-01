@@ -13,7 +13,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const { id } = await params;
     const body = await request.json();
 
-    const wordList: any = await WordList.findById(id);
+    const wordList: any = await WordList.findByPk(id);
     if (!wordList) {
       return new NextResponse('Word list not found', { status: 404, headers: corsHeaders });
     }
