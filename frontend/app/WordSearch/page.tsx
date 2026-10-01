@@ -168,16 +168,22 @@ export default function WordSearchPage() {
     }
   }, [foundWords, wordsData]);
 
-  // Fetch word lists from the API, then build the first puzzle
+  // Fetch word lists from the API, then build the first puzzle.
+  // If the API has no words seeded yet, fall back to the built-in random set.
   useEffect(() => {
     fetchAllWordLists()
       .then((lists) => {
+        const hasWords = lists[3].length + lists[4].length + lists[5].length > 0;
+        if (!hasWords) {
+          buildPuzzle(DEFAULT_WORDS);
+          return;
+        }
         wordsByLengthRef.current = lists;
         const initialInput = toWordInput(phonemeLength);
         setWordInput(initialInput);
         buildPuzzle(initialInput);
       })
-      .catch(() => setLoadError("Could not load word list from the API."));
+      .catch(() => buildPuzzle(DEFAULT_WORDS));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function getPath(a: { r: number; c: number }, b: { r: number; c: number }) {
