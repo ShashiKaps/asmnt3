@@ -131,8 +131,10 @@ async function seedWords() {
 
 export function ensureDb(): Promise<void> {
   if (!dbReadyPromise) {
-    // alter:true so newly added columns/tables (e.g. WordList, wordListId) get applied to the existing sqlite file
-    dbReadyPromise = sequelize.sync({ alter: true }).then(() => seedWords());
+    // plain sync (no alter): alter:true recreates tables on every boot, and since Words.wordListId
+    // has ON DELETE CASCADE, dropping/recreating WordLists wiped all Word rows on every restart.
+    // Run migrations (see migrations/) for schema changes instead of altering on boot.
+    dbReadyPromise = sequelize.sync().then(() => seedWords());
   }
   return dbReadyPromise as Promise<void>;
 }
