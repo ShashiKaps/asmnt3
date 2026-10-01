@@ -11,6 +11,7 @@ const links = [
   { href: "/WordSearch", label: "Word Search" },
   { href: "/About", label: "About" },
   { href: "/Settings", label: "Settings" },
+  { href: "/Dashboard", label: "Dashboard" },
 ];
 
 export default function Navbar() {

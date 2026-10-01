@@ -84,3 +84,77 @@ export function deleteWord(id: number): Promise<null> {
   return fetch(`${API_URL}/api/words/${id}`, { method: "DELETE" }).then(unwrap);
 }
 
+// --- Dashboard / observability ---
+
+export type HealthStatus = { status: "ok" | "error"; uptimeMs: number };
+
+export type Stats = {
+  wordListCount: number;
+  activityConfigCounts: Record<string, number>;
+  generationCounts: Record<string, number>;
+  averageTimeOnPageMs: number;
+  pageViewCounts: Record<string, number>;
+  mostUsedActivityType: string | null;
+  recentFailures: { id: number; activityType: string; errorReason: string | null; createdAt: string }[];
+};
+
+export function fetchHealth(): Promise<HealthStatus> {
+  return fetch(`${API_URL}/api/health`).then((res) => res.json());
+}
+
+export function fetchStats(): Promise<Stats> {
+  return fetch(`${API_URL}/api/stats`).then(unwrap);
+}
+
+export function logPageView(page: string, durationMs: number): void {
+  fetch(`${API_URL}/api/events/pageview`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ page, durationMs }),
+    keepalive: true,
+  }).catch(() => {});
+}
+
+export function logGeneration(payload: { activityType: "wordle" | "wordsearch"; status: "success" | "failure"; errorReason?: string; durationMs?: number }): void {
+  fetch(`${API_URL}/api/events/generation`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    keepalive: true,
+  }).catch(() => {});
+}
+
+export type ActivityConfigEntry = {
+  id: number;
+  name: string;
+  activityType: "wordle" | "wordsearch";
+  difficulty: "easy" | "medium" | "hard";
+  hintsEnabled: boolean;
+  outputSettings: Record<string, unknown> | null;
+  wordListId: number;
+  wordListName: string | null;
+};
+
+export function fetchActivityConfigs(): Promise<ActivityConfigEntry[]> {
+  return fetch(`${API_URL}/api/activity-configs`).then(unwrap);
+}
+
+export function createActivityConfig(payload: {
+  name: string;
+  activityType: "wordle" | "wordsearch";
+  wordListId: number;
+  difficulty?: "easy" | "medium" | "hard";
+  hintsEnabled?: boolean;
+  outputSettings?: Record<string, unknown>;
+}): Promise<{ id: number; name: string; activityType: string }> {
+  return fetch(`${API_URL}/api/activity-configs`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }).then(unwrap);
+}
+
+export function deleteActivityConfig(id: number): Promise<null> {
+  return fetch(`${API_URL}/api/activity-configs/${id}`, { method: "DELETE" }).then(unwrap);
+}
+

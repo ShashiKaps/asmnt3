@@ -94,6 +94,93 @@ export const WordList = sequelize.define('WordList', {
 WordList.hasMany(Word, { foreignKey: 'wordListId', onDelete: 'CASCADE' });
 Word.belongsTo(WordList, { foreignKey: 'wordListId' });
 
+// A builder-configured activity (Wordle or Word Search) backed by one word list.
+export const ActivityConfig = sequelize.define('ActivityConfig', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  activityType: {
+    type: DataTypes.ENUM('wordle', 'wordsearch'),
+    allowNull: false,
+  },
+  difficulty: {
+    type: DataTypes.ENUM('easy', 'medium', 'hard'),
+    allowNull: false,
+    defaultValue: 'medium',
+  },
+  hintsEnabled: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
+  // free-form JSON text, e.g. { "gridRows": 10, "gridCols": 10, "maxAttempts": 6 }
+  outputSettings: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+}, {
+  timestamps: true,
+  underscored: false,
+}) as any;
+
+WordList.hasMany(ActivityConfig, { foreignKey: 'wordListId', onDelete: 'CASCADE' });
+ActivityConfig.belongsTo(WordList, { foreignKey: 'wordListId' });
+
+// One row per generation attempt (builder preview or end-user play), for the dashboard's
+// success/failure counters and most-used-activity-type reporting.
+export const GenerationEvent = sequelize.define('GenerationEvent', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  activityType: {
+    type: DataTypes.ENUM('wordle', 'wordsearch'),
+    allowNull: false,
+  },
+  status: {
+    type: DataTypes.ENUM('success', 'failure'),
+    allowNull: false,
+  },
+  errorReason: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  durationMs: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+}, {
+  timestamps: true,
+  underscored: false,
+}) as any;
+
+// One row per page visit, for average-time-on-page reporting.
+export const PageView = sequelize.define('PageView', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  page: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  durationMs: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+}, {
+  timestamps: true,
+  underscored: false,
+}) as any;
+
 // Creates tables that don't exist yet (safe to call on every boot; no-ops once tables exist).
 let dbReadyPromise: Promise<void> | null = null;
 
