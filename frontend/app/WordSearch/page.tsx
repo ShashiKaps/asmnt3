@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { fetchAllWordLists, WordEntry } from "../lib/api";
+import { fetchAllWordLists, WordEntry, logGeneration, logPageView } from "../lib/api";
 
 interface WordData {
   display: string;
@@ -98,6 +98,7 @@ export default function WordSearchPage() {
   }
 
   function buildPuzzle(inputOverride?: string, numWordsOverride?: number) {
+    const startedAt = performance.now();
     setError("");
     setFound(new Set());
     setFoundWords(new Set());
@@ -111,7 +112,10 @@ export default function WordSearchPage() {
     const rows = gridRows;
     const cols = gridCols;
     const lines = freshInput.trim().split("\n").map((l) => l.trim()).filter((l) => l.length > 0).slice(0, numWordsOverride ?? numWords);
-    if (lines.length === 0) return;
+    if (lines.length === 0) {
+      logGeneration({ activityType: "wordsearch", status: "failure", errorReason: "empty word list" });
+      return;
+    }
 
     const words: WordData[] = [];
     const pool: string[] = [];
@@ -161,7 +165,21 @@ export default function WordSearchPage() {
     setGridMatrix([...matrix]);
     setWordsData([...words]);
     setSolutions([...sols]);
+
+    const unplacedCount = words.length - sols.length;
+    logGeneration({
+      activityType: "wordsearch",
+      status: unplacedCount === words.length ? "failure" : "success",
+      errorReason: unplacedCount > 0 ? `could not place ${unplacedCount} word(s) in grid` : undefined,
+      durationMs: Math.round(performance.now() - startedAt),
+    });
   }
+
+  // track time spent on this page for the dashboard's average-time-on-page stat
+  useEffect(() => {
+    const start = performance.now();
+    return () => logPageView("wordsearch", performance.now() - start);
+  }, []);
 
   // show congratulations popup when all words are found
   useEffect(() => {

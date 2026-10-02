@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { generatePuzzle, Puzzle } from "./WordleEngine";
 import WordleGame from "./WordleGame";
-import { fetchAllWordLists, WordEntry } from "../lib/api";
+import { fetchAllWordLists, WordEntry, logGeneration, logPageView } from "../lib/api";
 
 export default function WordlePage() {
   const [wordsByLength, setWordsByLength] = useState<Record<3 | 4 | 5, WordEntry[]>>({ 3: [], 4: [], 5: [] });
@@ -21,6 +21,12 @@ export default function WordlePage() {
       .catch(() => setLoadError("Could not load word list from the API."));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // track time spent on this page for the dashboard's average-time-on-page stat
+  useEffect(() => {
+    const start = performance.now();
+    return () => logPageView("wordle", performance.now() - start);
+  }, []);
+
   const handleEnglishWordChange = (val: string) => {
     setEnglishWord(val);
     const allWords = [...wordsByLength[3], ...wordsByLength[4], ...wordsByLength[5]];
@@ -33,10 +39,15 @@ export default function WordlePage() {
   };
 
   const handleGenerate = () => {
+    const startedAt = performance.now();
     const list = wordsByLength[phonemeLength];
-    if (list.length === 0) return;
+    if (list.length === 0) {
+      logGeneration({ activityType: "wordle", status: "failure", errorReason: "empty word list" });
+      return;
+    }
     const maxGuesses = Math.min(8, Math.max(1, parseInt(noOfGuess) || 8)); {/* max number of guess*/} 
     setPuzzle(generatePuzzle(list, maxGuesses, showHints));
+    logGeneration({ activityType: "wordle", status: "success", durationMs: Math.round(performance.now() - startedAt) });
   };
 
   return (
