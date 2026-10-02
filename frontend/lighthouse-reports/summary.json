@@ -1,0 +1,52 @@
+[
+  {
+    "page": "home",
+    "url": "http://localhost/",
+    "scores": {
+      "performance": 46,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    }
+  },
+  {
+    "page": "wordle",
+    "url": "http://localhost/Wordle",
+    "scores": {
+      "performance": 57,
+      "accessibility": 93,
+      "best-practices": 81,
+      "seo": 100
+    }
+  },
+  {
+    "page": "wordsearch",
+    "url": "http://localhost/WordSearch",
+    "scores": {
+      "performance": 56,
+      "accessibility": 92,
+      "best-practices": 81,
+      "seo": 100
+    }
+  },
+  {
+    "page": "settings",
+    "url": "http://localhost/Settings",
+    "scores": {
+      "performance": 56,
+      "accessibility": 93,
+      "best-practices": 81,
+      "seo": 100
+    }
+  },
+  {
+    "page": "dashboard",
+    "url": "http://localhost/Dashboard",
+    "scores": {
+      "performance": 55,
+      "accessibility": 100,
+      "best-practices": 81,
+      "seo": 100
+    }
+  }
+]
