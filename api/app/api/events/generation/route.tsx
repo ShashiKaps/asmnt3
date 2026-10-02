@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GenerationEvent, ensureDb } from '../../../lib/sequelize';
 import { corsHeaders } from '../../../lib/cors';
+import { generationEventsCounter } from '../../../lib/otel';
 
 export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: corsHeaders });
@@ -25,6 +26,8 @@ export async function POST(request: NextRequest) {
       errorReason: typeof body.errorReason === 'string' ? body.errorReason : null,
       durationMs: typeof body.durationMs === 'number' ? body.durationMs : null,
     });
+
+    generationEventsCounter.add(1, { activityType: body.activityType, status: body.status });
 
     return NextResponse.json({ id: event.id }, { status: 201, headers: corsHeaders });
   } catch (error) {

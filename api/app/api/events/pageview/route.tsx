@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PageView, ensureDb } from '../../../lib/sequelize';
 import { corsHeaders } from '../../../lib/cors';
+import { pageViewsCounter, pageViewDurationHistogram } from '../../../lib/otel';
 
 export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: corsHeaders });
@@ -20,6 +21,10 @@ export async function POST(request: NextRequest) {
     }
 
     const view = await PageView.create({ page: body.page, durationMs: Math.round(body.durationMs) });
+
+    pageViewsCounter.add(1, { page: body.page });
+    pageViewDurationHistogram.record(Math.round(body.durationMs), { page: body.page });
+
     return NextResponse.json({ id: view.id }, { status: 201, headers: corsHeaders });
   } catch (error) {
     console.error(error);
