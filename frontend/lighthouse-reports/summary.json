@@ -1,9 +1,9 @@
 [
   {
     "page": "home",
-    "url": "http://localhost/",
+    "url": "http://localhost:3005/",
     "scores": {
-      "performance": 46,
+      "performance": 96,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100
@@ -11,39 +11,39 @@
   },
   {
     "page": "wordle",
-    "url": "http://localhost/Wordle",
+    "url": "http://localhost:3005/Wordle",
     "scores": {
-      "performance": 57,
-      "accessibility": 93,
+      "performance": 98,
+      "accessibility": 100,
       "best-practices": 81,
       "seo": 100
     }
   },
   {
     "page": "wordsearch",
-    "url": "http://localhost/WordSearch",
+    "url": "http://localhost:3005/WordSearch",
     "scores": {
-      "performance": 56,
-      "accessibility": 92,
+      "performance": 92,
+      "accessibility": 100,
       "best-practices": 81,
       "seo": 100
     }
   },
   {
     "page": "settings",
-    "url": "http://localhost/Settings",
+    "url": "http://localhost:3005/Settings",
     "scores": {
-      "performance": 56,
-      "accessibility": 93,
+      "performance": 92,
+      "accessibility": 100,
       "best-practices": 81,
       "seo": 100
     }
   },
   {
     "page": "dashboard",
-    "url": "http://localhost/Dashboard",
+    "url": "http://localhost:3005/Dashboard",
     "scores": {
-      "performance": 55,
+      "performance": 98,
       "accessibility": 100,
       "best-practices": 81,
       "seo": 100

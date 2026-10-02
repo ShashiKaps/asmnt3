@@ -68,8 +68,9 @@ export default function WordlePage() {
 
           {/* English Word input */}
           <div className="flex items-center gap-4">
-            <label className="w-40 text-right shrink-0">English Word</label>
+            <label htmlFor="englishWord" className="w-40 text-right shrink-0">English Word</label>
             <input
+              id="englishWord"
               type="text"
               value={englishWord}
               onChange={(e) => handleEnglishWordChange(e.target.value)}
@@ -106,8 +107,9 @@ export default function WordlePage() {
 
           {/* No of Guess input */}
           <div className="flex items-center gap-4">
-            <label className="w-40 text-right shrink-0">No of Guess  (maximum 8) </label>
+            <label htmlFor="noOfGuess" className="w-40 text-right shrink-0">No of Guess  (maximum 8) </label>
             <input
+              id="noOfGuess"
               type="number"
               min={1}
               max={8}

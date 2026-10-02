@@ -353,8 +353,9 @@ export default function WordSearchPage() {
           <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-xl p-5 w-72 flex flex-col gap-3 shrink-0">
             {error && <p className="text-red-400 text-sm bg-red-950 rounded p-2">{error}</p>}
 
-            <label className="font-semibold text-sm text-[var(--page-text)]">Words (Space-separated phonemes):</label>
+            <label htmlFor="wordInput" className="font-semibold text-sm text-[var(--page-text)]">Words (Space-separated phonemes):</label>
             <textarea
+              id="wordInput"
               value={wordInput}
               onChange={(e) => setWordInput(e.target.value)}
               className="bg-[var(--page-bg)] border border-[var(--border)] rounded p-2 text-white font-mono text-sm resize-none h-44 outline-none focus:border-blue-400"
@@ -362,8 +363,9 @@ export default function WordSearchPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="font-semibold text-sm text-[var(--page-text)]">Rows 10 - 14</label>
+                <label htmlFor="gridRows" className="font-semibold text-sm text-[var(--page-text)]">Rows 10 - 14</label>
                 <input
+                  id="gridRows"
                   type="number"
                   min={10}
                   max={14}
@@ -373,8 +375,9 @@ export default function WordSearchPage() {
                 />
               </div>
               <div>
-                <label className="font-semibold text-sm text-[var(--page-text)]">Columns 10 - 14</label>
+                <label htmlFor="gridCols" className="font-semibold text-sm text-[var(--page-text)]">Columns 10 - 14</label>
                 <input
+                  id="gridCols"
                   type="number"
                   min={10}
                   max={14}
@@ -426,7 +429,7 @@ export default function WordSearchPage() {
 
             {/* Word list */}
             <div className="w-full bg-[var(--card-bg)] border border-[var(--border)] rounded-xl p-4">
-              <h3 className="font-semibold text-[var(--muted-text)] mb-2">Word List:</h3>
+              <h2 className="font-semibold text-[var(--muted-text)] mb-2">Word List:</h2>
               <div className="flex flex-wrap gap-2">
                 {wordsData.map((w) => (
                   <span

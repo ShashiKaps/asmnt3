@@ -117,8 +117,9 @@ export default function SettingsPage() {
           </div>
 
           <div className="flex gap-4 flex-1">
-            <span className="shrink-0">Word List</span>
+            <label htmlFor="wordListText" className="shrink-0">Word List</label>
             <textarea
+              id="wordListText"
               value={wordList}
               onChange={(e) => setWordList(e.target.value)}
               className="flex-1 border border-[var(--border)] rounded p-3 bg-[var(--wordlist-bg)] text-[var(--page-text)] font-mono text-sm resize-none outline-none focus:border-blue-400 min-h-[580px]"
