@@ -113,6 +113,7 @@ export default function WordSearchPage() {
     const cols = gridCols;
     const lines = freshInput.trim().split("\n").map((l) => l.trim()).filter((l) => l.length > 0).slice(0, numWordsOverride ?? numWords);
     if (lines.length === 0) {
+      setError("No words available for this list — add words or choose a different phoneme length.");
       logGeneration({ activityType: "wordsearch", status: "failure", errorReason: "empty word list" });
       return;
     }

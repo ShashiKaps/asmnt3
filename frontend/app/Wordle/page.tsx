@@ -8,6 +8,7 @@ import { fetchAllWordLists, WordEntry, logGeneration, logPageView } from "../lib
 export default function WordlePage() {
   const [wordsByLength, setWordsByLength] = useState<Record<3 | 4 | 5, WordEntry[]>>({ 3: [], 4: [], 5: [] });
   const [loadError, setLoadError] = useState("");
+  const [genError, setGenError] = useState("");
   const [englishWord, setEnglishWord] = useState("");
   const [phonemeWord, setPhonemeWord] = useState("");
   const [showHints, setShowHints] = useState(false);
@@ -42,9 +43,11 @@ export default function WordlePage() {
     const startedAt = performance.now();
     const list = wordsByLength[phonemeLength];
     if (list.length === 0) {
+      setGenError(`No words available for ${phonemeLength}-phoneme length — add words to this list or choose a different length.`);
       logGeneration({ activityType: "wordle", status: "failure", errorReason: "empty word list" });
       return;
     }
+    setGenError("");
     const maxGuesses = Math.min(8, Math.max(1, parseInt(noOfGuess) || 8)); {/* max number of guess*/} 
     setPuzzle(generatePuzzle(list, maxGuesses, showHints));
     logGeneration({ activityType: "wordle", status: "success", durationMs: Math.round(performance.now() - startedAt) });
@@ -149,6 +152,7 @@ export default function WordlePage() {
               Generate
             </button>
           </div>
+          {genError && <p className="text-red-400 text-sm bg-red-950 rounded p-2 text-right">{genError}</p>}
         </div>
       </div>
     </div>
