@@ -3,7 +3,7 @@
     "page": "home",
     "url": "http://localhost/",
     "scores": {
-      "performance": 62,
+      "performance": 63,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100
@@ -13,7 +13,7 @@
     "page": "wordle",
     "url": "http://localhost/Wordle",
     "scores": {
-      "performance": 77,
+      "performance": 79,
       "accessibility": 100,
       "best-practices": 81,
       "seo": 100
@@ -23,7 +23,7 @@
     "page": "wordsearch",
     "url": "http://localhost/WordSearch",
     "scores": {
-      "performance": 53,
+      "performance": 79,
       "accessibility": 100,
       "best-practices": 81,
       "seo": 100
@@ -33,7 +33,7 @@
     "page": "settings",
     "url": "http://localhost/Settings",
     "scores": {
-      "performance": 54,
+      "performance": 55,
       "accessibility": 100,
       "best-practices": 81,
       "seo": 100
@@ -43,7 +43,7 @@
     "page": "dashboard",
     "url": "http://localhost/Dashboard",
     "scores": {
-      "performance": 51,
+      "performance": 76,
       "accessibility": 100,
       "best-practices": 81,
       "seo": 100

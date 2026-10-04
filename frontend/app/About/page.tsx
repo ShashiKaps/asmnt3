@@ -6,8 +6,8 @@ export default function AboutPage() {
         <div className="flex-1 border border-[var(--border)] rounded p-4 md:p-5 bg-[#040b14] shadow-lg shadow-black/30">
           <div className="space-y-2 text-sm md:text-[15px] leading-relaxed text-[var(--muted-text)]">
             <p>
-              This project is for Assessment 1, developing a web application using React and Next.js.
-              The focus is on Frontend design and usability.
+              This project is for Assessment 3, developing a web application using React and Next.js.
+              The focus is on extending the application with a dashboard and testing with Playwright, JMeter and Lighthouse.
             </p>
             <p>
               VS Code with Next.js and React form the basis of the application.
