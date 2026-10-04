@@ -13,7 +13,7 @@ export default function AboutPage() {
               VS Code with Next.js and React form the basis of the application.
             </p>
             <p>
-              The use of AI coding tools was the Claude 4.6 model with GitHub Co-Pilot. All code is uploaded onto my GitHub student account.
+              The use of AI coding tools was the Claude 5.0 model with GitHub Co-Pilot. All code is uploaded onto my GitHub student account.
             </p>
             <p>
               Research was done as per the links on the Home Page to understand what the Phonemes are about. Based on the research learning Phonemes are primarily for literacy education.

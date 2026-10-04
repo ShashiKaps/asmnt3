@@ -1,4 +1,4 @@
-export const API_URL = "http://ec2-18-208-126-137.compute-1.amazonaws.com:4080";
+export const API_URL = "http://ec2-100-27-243-86.compute-1.amazonaws.com:4080";
 
 export type WordEntry = {
   id?: number;
