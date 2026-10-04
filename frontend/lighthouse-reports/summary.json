@@ -3,7 +3,7 @@
     "page": "home",
     "url": "http://localhost/",
     "scores": {
-      "performance": 61,
+      "performance": 62,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100
@@ -33,7 +33,7 @@
     "page": "settings",
     "url": "http://localhost/Settings",
     "scores": {
-      "performance": 53,
+      "performance": 54,
       "accessibility": 100,
       "best-practices": 81,
       "seo": 100
@@ -43,7 +43,7 @@
     "page": "dashboard",
     "url": "http://localhost/Dashboard",
     "scores": {
-      "performance": 75,
+      "performance": 51,
       "accessibility": 100,
       "best-practices": 81,
       "seo": 100
