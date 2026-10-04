@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata } from "nex";
 
 export const metadata: Metadata = {
   title: "Phoneme Lab API",
